@@ -2,44 +2,9 @@ import 'dart:io' as io;
 import 'dart:math';
 import 'dart:typed_data';
 
-import 'package:crypto/crypto.dart' as crypt;
 import 'package:flutter/foundation.dart';
 
-import 'error/file_io_exception.dart';
-
-extension IoFileCalculateMd5 on io.File {
-  /// ファイルのMD5を計算する.
-  /// ファイル読み込み中に問題が発生した場合、io.Fileからの例外をそのまま投げる.
-  Future<crypt.Digest> calculateMd5() async {
-    return crypt.md5.bind(openRead()).first;
-  }
-}
-
-extension IoFileCalculateSha1 on io.File {
-  /// ファイルのSHA1を計算する.
-  /// ファイル読み込み中に問題が発生した場合、io.Fileからの例外をそのまま投げる.
-  Future<crypt.Digest> calculateSha1() async {
-    return crypt.sha1.bind(openRead()).first;
-  }
-}
-
-extension IoFileCalculateSha256 on io.File {
-  /// ファイルのSHA256を計算する.
-  /// ファイル読み込み中に問題が発生した場合、io.Fileからの例外をそのまま投げる.
-  Future<crypt.Digest> calculateSha256() async {
-    return crypt.sha256.bind(openRead()).first;
-  }
-}
-
-extension IoFileCalculateSha512 on io.File {
-  /// ファイルのSHA512を計算する.
-  /// ファイル読み込み中に問題が発生した場合、io.Fileからの例外をそのまま投げる.
-  Future<crypt.Digest> calculateSha512() async {
-    return crypt.sha512.bind(openRead()).first;
-  }
-}
-
-extension IoFileSafeWriteBytes on io.File {
+extension IoFileWriteAsBytesCompat on io.File {
   /// Dart SDKのFile書き込み不具合を避け、可能な限り確実にファイルを書き込む.
   ///
   /// 大容量ファイルの書き込みを分割チェックして行うため、適切な [blockSize] を指定する.
@@ -52,7 +17,7 @@ extension IoFileSafeWriteBytes on io.File {
   /// 経験則として概ね1回目のリトライで書き込みは成功する.
   ///
   /// Dart SDK issue: https://github.com/dart-lang/sdk/issues/36087
-  Future safeWriteBytes(
+  Future writeAsBytesCompat(
     Uint8List binary, {
     int blockSize = 1024 * 256,
     int retry = 10,
@@ -83,8 +48,8 @@ extension IoFileSafeWriteBytes on io.File {
         }
       } on io.FileSystemException catch (e, stackTrace) {
         if (kDebugMode) {
-          print('FileExtensions.safeWriteBytes() failed: $e');
-          print(stackTrace);
+          debugPrint('FileExtensions.writeAsBytesCompat() failed: $e');
+          debugPrint(stackTrace.toString());
         }
         return false;
       }
@@ -99,6 +64,6 @@ extension IoFileSafeWriteBytes on io.File {
       }
       debugPrint('Retry write[${i + 1}] -> $path');
     }
-    throw FileIOException('Write failed: $path');
+    throw io.FileSystemException('Write failed: $path');
   }
 }
