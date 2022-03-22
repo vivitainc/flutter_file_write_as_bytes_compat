@@ -1,6 +1,6 @@
 
 
-[![Github Actions](https://github.com/vivitainc/file_write_as_bytes_compat/actions/workflows/flutter-package-test.yaml/badge.svg)](https://github.com/vivitainc/file_write_as_bytes_compat/actions/workflows/flutter-package-test.yaml)
+[![Github Actions](https://github.com/vivitainc/flutter_file_write_as_bytes_compat/actions/workflows/flutter-package-test.yaml/badge.svg)](https://github.com/vivitainc/flutter_file_write_as_bytes_compat/actions/workflows/flutter-package-test.yaml)
 
 ## Features
 
